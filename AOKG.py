@@ -11,6 +11,8 @@ class KindnessBackend:
     def __init__(self, file_path, config_file_path):
         self.file_path = file_path
         self.config_file_path = config_file_path
+        self.running=True 
+        
        
         
 
@@ -26,7 +28,6 @@ class KindnessBackend:
             json.dump(user_config, config_file)
 
     def print_random_act(self):
-        print('working')
         user_config = self.load_user_config()
         preferred_time = user_config.get("Enter The Preferred Time For Notification", "11:00")
 
@@ -45,14 +46,21 @@ class KindnessBackend:
     def schedule_backend(self):
         user_config = self.load_user_config()
         preferred_time = user_config.get("Enter The Preferred Time For Notification", "11:00")
-        schedule.every().day.at(preferred_time).do(self.print_random_act)
+        self.schedule_job=schedule.every().day.at(preferred_time).do(self.print_random_act)
         def schedule_task():
           while True:
            schedule.run_pending()
            time.sleep(5)
         threading.Thread(target=schedule_task(), daemon=True).start()    
-       
-    
+        print("kaam karra")
+
+    def stop(self):
+        self.running=False
+
+    def cancel_job(self):
+         self.running=False
+         if self.schedule_job:
+            self.schedule_job.cancel_after()
         
         
         

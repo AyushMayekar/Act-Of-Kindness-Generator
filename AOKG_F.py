@@ -20,6 +20,7 @@ class Kindness_App:
         self.page4_frame = ctk.CTkFrame(master=root) # Creates a frame for page 4 of the GUI
         self.root.title("KindnessApp") # Gives the Title for thr frame
         self.root.geometry("800x700") # Sets the Geometry(widthxheight) of the frame
+        self.stop_event=threading.Event()
 
 
         # Method to traverse from page1 to page2
@@ -50,6 +51,9 @@ class Kindness_App:
 
    # Method to go to page3 from page2
     def go_to_Page3(self):  
+     for widget in self.page4_frame.winfo_children():
+         widget.destroy()
+         self.page4_frame.pack_forget()
      for widget in self.page2_frame.winfo_children():
          widget.destroy()  
      self.page2_frame.pack_forget()
@@ -60,12 +64,30 @@ class Kindness_App:
      self.User_input.pack(padx=10,pady=10)
      self.submit_toggle=ctk.CTkSwitch(master=self.page3_frame,switch_height=20,height=30,width=60,text='',command=self.backend_integration)
      self.submit_toggle.pack(padx=10,pady=10)
-     self.Button_3_1=ctk.CTkButton(master=self.page3_frame,text="NEXT",height=30,font=("ariel",15))
+     self.Button_3_1=ctk.CTkButton(master=self.page3_frame,text="NEXT",height=30,font=("ariel",15),command=self.go_to_page4)
      self.Button_3_1.pack(padx=10,pady=10,side="right")
      self.Button_3_2=ctk.CTkButton(master=self.page3_frame,text="PREVIOUS",height=30,font=("ariel",15),command=self.go_to_Page2)
      self.Button_3_2.pack(padx=10,pady=10,side="left")
      self.page3_frame.pack() 
     
+    def go_to_page4(self):
+       for widget in self.page3_frame.winfo_children():
+         widget.destroy()  
+       self.page3_frame.pack_forget()
+       self.wel_mes=ctk.CTkLabel(master=self.page4_frame,
+                                  text="Thank you for choosing KindnessApp! 🌟 \nYour commitment to spreading joy and positivity makes the world a better place.\n Keep embracing kindness, and let's continue making a positive impact together. 😊💙",
+                                  height=650,
+                                  width=500,corner_radius=20,
+                                  fg_color='Midnight Blue',
+                                  font=("arial",20))
+       self.wel_mes.pack(padx=10,pady=10)
+       self.Button_4_1=ctk.CTkButton(master=self.page4_frame,text="NEXT",height=30,font=("ariel",15),command=self.stop_gui)
+       self.Button_4_1.pack(padx=10,pady=10,side="right")
+       self.Button_4_2=ctk.CTkButton(master=self.page4_frame,text="PREVIOUS",height=30,font=("ariel",15),command=self.go_to_Page3)
+       self.Button_4_2.pack(padx=10,pady=10,side="left")
+       self.page4_frame.pack()
+
+
     # Method to integrate Backend
     def backend_integration(self):
        self.current_value=self.submit_toggle.get()
@@ -79,14 +101,33 @@ class Kindness_App:
           self.user_config=self.backend.load_user_config()
           self.user_config['Enter The Preferred Time For Notification'] =self.preferred_time
           self.backend.save_user_config(self.user_config)
-          threading.Thread(target=self.delaying_backend).start()
+          self.backend_thread=threading.Thread(target=self.delaying_backend)
+          self.backend_thread.start()
+       else:
+          self.stop_backend()
           
           
 
+    def stop_backend(self):
+       if self.backend_thread and self.backend_thread.is_alive():
+        self.backend.stop()
+        self.backend_thread.join()
+
+    def stop_gui(self):
+       self.root.destroy()      
+
     def delaying_backend(self):
-       while True:
-        self.backend.schedule_backend()
-        time.sleep(10)
+      try:
+       while not self.stop_event.is_set():
+           print("runnning thread")
+           self.backend.schedule_backend()
+           time.sleep(10)
+      except Exception as e:
+       print("Exception Occured in Thread : ",e)
+      finally:
+          print("thread stopped") 
+        
+       
        
                 
           
