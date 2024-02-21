@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Input</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h2>Set Notification Time</h2>
+        <form action="/set-time" method="POST">
+            <label for="time">Enter your preferred time for notifications:</label>
+            <input type="text" id="time" name="time" placeholder="HH:MM" required>
+            <button type="submit">Submit</button>
+        </form>
+        <a href="/welcome" class="previous-button">Previous</a>
+        <a href="/thank_you" class="next-button">Next</a>
+    </header>
+</body>
+</html>

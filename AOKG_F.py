@@ -104,14 +104,15 @@ class Kindness_App:
           self.backend_thread=threading.Thread(target=self.delaying_backend)
           self.backend_thread.start()
        else:
-          self.stop_backend()
+          pass
+        #   self.stop_backend()
           
           
 
-    def stop_backend(self):
-       if self.backend_thread and self.backend_thread.is_alive():
-        self.backend.stop()
-        self.backend_thread.join()
+    # def stop_backend(self):
+    #    if self.backend_thread and self.backend_thread.is_alive():
+    #     self.backend.stop()
+    #     self.backend_thread.join()
 
     def stop_gui(self):
        self.root.destroy()      
