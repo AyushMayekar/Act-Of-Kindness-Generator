@@ -1,4 +1,3 @@
-import schedule  # Import the schedule library for task scheduling
 import random  # Import the random library for generating random numbers
 import time  # Import the time library for time-related functions
 from plyer import notification  # Import the notification module from plyer library for displaying notifications
@@ -48,7 +47,7 @@ class KindnessBackend:
          if kind_acts:  # Check if there are acts of kindness available
             selected_act = random.choice(kind_acts)  # Select a random act of kindness
             kind_acts.remove(selected_act)  # Remove the selected act from the list
-            notification.notify("Today's Act of Kindness is:", message=selected_act,app_icon=r'C:\Users\ayush\OneDrive\Desktop\Act Of Kindness Genrator\BE-KIND.ico', timeout=10)  # Display the notification
+            notification.notify("Today's Act of Kindness is:", message=selected_act,app_icon=r'C:\Users\ayush\OneDrive\Desktop\Act Of Kindness Genrator\BE-KIND.ico', timeout=10)  # Display the notification (Set the path for .ico file)
             with open(self.file_path,'w') as file:
                file.write('\n'.join(kind_acts))
          else:
@@ -62,6 +61,6 @@ backend = KindnessBackend(
         file_path='C:/Users/ayush/OneDrive/Desktop/Act Of Kindness Genrator/kind_acts.txt',  # Specify the file path for acts of kindness
         config_file_path='C:/Users/ayush/OneDrive/Desktop/Act Of Kindness Genrator/user_config.json'  # Specify the file path for user configurations
     )
-preferred_time = "00:37"
+preferred_time = "18:14" # Enter your Preferred Time for Notification
 backend.save_user_config({"preferred_time": preferred_time})
 backend.print_random_act()  # Print a random act of kindness
